@@ -1,34 +1,35 @@
-use rltk::{GameState, RGB, Rltk};
+use rltk::{GameState, Rltk, RGB};
 use specs::prelude::*;
 
 pub use components::*;
 pub use map::*;
 pub use player::*;
+pub use rect::Rect;
 
-mod rect;
-mod player;
-mod map;
 mod components;
+mod map;
+mod player;
+mod rect;
 
 pub struct State {
     ecs: World,
 }
 
-impl State {
-    fn run_systems(&mut self) {
-        let mut lw = LeftWalker {};
-        lw.run_now(&self.ecs);
-        self.ecs.maintain();
-    }
-}
+// impl State {
+//     fn run_systems(&mut self) {
+//         let mut lw = LeftWalker {};
+//         lw.run_now(&self.ecs);
+//         self.ecs.maintain();
+//     }
+// }
 
 impl GameState for State {
     fn tick(&mut self, ctx: &mut Rltk) {
         ctx.cls();
-        ctx.print(1, 1, "Hello Rust World");
+        // ctx.print(1, 1, "Hello Rust World");
 
         player_input(self, ctx);
-        self.run_systems();
+        // self.run_systems();
 
         let map = self.ecs.fetch::<Vec<TileType>>();
         draw_map(&map, ctx);
@@ -50,13 +51,19 @@ fn main() -> rltk::BError {
     let mut gs = State { ecs: World::new() };
     gs.ecs.register::<Position>();
     gs.ecs.register::<Renderable>();
-    gs.ecs.register::<LeftMover>();
     gs.ecs.register::<Player>();
-    gs.ecs.insert(new_map());
+    // gs.ecs.register::<LeftMover>();
+
+    let (rooms, map) = new_map_rooms_and_corridors();
+    gs.ecs.insert(map);
+    let (player_x, player_y) = rooms[0].center();
 
     gs.ecs
         .create_entity()
-        .with(Position { x: 40, y: 25 })
+        .with(Position {
+            x: player_x,
+            y: player_y,
+        })
         .with(Renderable {
             glyph: rltk::to_cp437('@'),
             fg: RGB::named(rltk::YELLOW),
@@ -65,18 +72,18 @@ fn main() -> rltk::BError {
         .with(Player {})
         .build();
 
-    for i in 0..10 {
-        gs.ecs
-            .create_entity()
-            .with(Position { x: i * 7, y: 20 })
-            .with(Renderable {
-                glyph: rltk::to_cp437('☺'),
-                fg: RGB::named(rltk::RED),
-                bg: RGB::named(rltk::BLACK),
-            })
-            // .with(LeftMover {})
-            .build();
-    }
+    // for i in 0..10 {
+    //     gs.ecs
+    //         .create_entity()
+    //         .with(Position { x: i * 7, y: 20 })
+    //         .with(Renderable {
+    //             glyph: rltk::to_cp437('☺'),
+    //             fg: RGB::named(rltk::RED),
+    //             bg: RGB::named(rltk::BLACK),
+    //         })
+    //         // .with(LeftMover {})
+    //         .build();
+    // }
 
     rltk::main_loop(context, gs)
 }
