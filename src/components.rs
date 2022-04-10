@@ -35,3 +35,9 @@ impl<'a> System<'a> for LeftWalker {
         }
     }
 }
+
+#[derive(Component)]
+pub struct Viewshed {
+    pub visible_tiles: Vec<rltk::Point>,
+    pub range: i32,
+}
