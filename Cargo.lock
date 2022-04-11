@@ -759,15 +759,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "hellorust"
-version = "0.1.0"
-dependencies = [
- "rltk",
- "specs",
- "specs-derive",
-]
-
-[[package]]
 name = "hermit-abi"
 version = "0.1.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1460,6 +1451,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1c83076f8174384edf79d3f4a91934b8c0e1feed6eed943608d54af790f0a7dd"
 dependencies = [
  "bracket-lib",
+]
+
+[[package]]
+name = "rust-roguelike"
+version = "0.1.0"
+dependencies = [
+ "rltk",
+ "specs",
+ "specs-derive",
 ]
 
 [[package]]
